@@ -158,6 +158,9 @@ Do
     $Proceed = Read-Host "Please confirm to proceed: Y/N"
     # Check if invalid value is entered
         if ($Proceed -eq "Y"){
+            
+            # I’ve had mixed results with the -ObjectType parameter. Some tenants appear to require it and some do not. If an error is thrown indicating the ObjectType is unknown, remove the -ObjectType "ForeignGroup"
+            
             New-AzRoleAssignment -ObjectId $foreignPrincpalObjectID -Scope $subscriptionID -RoleDefinitionName $AssigningRole -ObjectType "ForeignGroup"
             Write-Host "Successfully Assigned" $AssigningRole "to" $subscriptionID "."
         }elseif ($Proceed -eq "N"){
