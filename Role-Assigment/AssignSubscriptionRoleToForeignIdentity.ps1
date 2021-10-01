@@ -151,22 +151,57 @@ Do
         $AssigningRole = "Reader"
      }
 
-Write-Host "You are about to assign the role" $AssigningRole "to the subscription" $subscriptionID 
+if ($AssigningRole -eq "Reader") {
+    Do 
+    { 
+    $Proceed = Read-Host "Would you also like to assign the Support Request Contributor as well? Y/N"
+    # Check if invalid value is entered
+        if ($Proceed -eq "Y"){
+
+            $SupportRequestContributor = $true
+            Write-Host "Support Request Contributor" -NoNewline; Write-Host " selected." -ForegroundColor Green
+        }elseif ($Proceed -eq "N"){
+            Write-Host "Support Request Contributor will not be assigned."
+        }else {
+            Write-Host "Please enter a valid selection of Y or N."
+        }
+    }
+    Until ($Proceed -eq "Y" -or $Proceed -eq "N")
+}
+
+if ($SupportRequestContributor = $true) {
+    Write-Host "You are about to assign the role" $AssigningRole "and Support Request Contributor to the subscription" $subscriptionID 
+} else {
+    Write-Host "You are about to assign the role" $AssigningRole "to the subscription" $subscriptionID 
+}
 
 Do 
     { 
     $Proceed = Read-Host "Please confirm to proceed: Y/N"
     # Check if invalid value is entered
         if ($Proceed -eq "Y"){
-            
+
             # I’ve had mixed results with the -ObjectType parameter. Some tenants appear to require it and some do not. If an error is thrown indicating the ObjectType is unknown, remove the -ObjectType "ForeignGroup"
-            
+
             New-AzRoleAssignment -ObjectId $foreignPrincpalObjectID -Scope $subscriptionID -RoleDefinitionName $AssigningRole -ObjectType "ForeignGroup"
+            
+            # Assign Support Request Contributor if user selected Yes for it
+
+            if ($SupportRequestContributor = $true) {
+                New-AzRoleAssignment -ObjectId $foreignPrincpalObjectID -Scope $subscriptionID -RoleDefinitionName "Support Request Contributor" -ObjectType "ForeignGroup"
+            }
+            
             Write-Host "Successfully Assigned" $AssigningRole "to" $subscriptionID "."
+            
+            if ($SupportRequestContributor = $true) {
+                Write-Host "Successfully Assigned Support Request Contributor to" $subscriptionID "."
+            }
+
+
         }elseif ($Proceed -eq "N"){
             Write-Host "Terminating script. Goodbye."
         }else {
-            Write-Host "Please enter a valid selection of Y or N"
+            Write-Host "Please enter a valid selection of Y or N."
         }
     }
     Until ($Proceed -eq "Y" -or $Proceed -eq "N")
