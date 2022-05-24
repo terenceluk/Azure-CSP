@@ -97,7 +97,7 @@ $ForeignPrincipalObject = $ForeignPrincipalList[$ForeignPrincipalSelection]
 "`n"
 Write-Host "Subscription ""Name: $($ForeignPrincipalObject.DisplayName) | Role: $($ForeignPrincipalObject.RoleDefinitionName)" -NoNewline; Write-Host " selected." -ForegroundColor Green
 
-$foreignPrincpalObjectID = $ForeignPrincipalObject.ObjectID
+$foreignPrincipalObjectID = $ForeignPrincipalObject.ObjectID
 
 # List out the subscriptions again for selecting which one to grant Foreign Principal permissions
 
@@ -198,12 +198,12 @@ Do
 
             # I’ve had mixed results with the -ObjectType parameter. Some tenants appear to require it and some do not. If an error is thrown indicating the ObjectType is unknown, remove the -ObjectType "ForeignGroup"
 
-            New-AzRoleAssignment -ObjectId $foreignPrincpalObjectID -Scope $subscriptionID -RoleDefinitionName $AssigningRole -ObjectType "ForeignGroup"
+            New-AzRoleAssignment -ObjectId $foreignPrincipalObjectID -Scope $subscriptionID -RoleDefinitionName $AssigningRole -ObjectType "ForeignGroup"
             
             # Assign Support Request Contributor if user selected Yes for it
 
             if ($SupportRequestContributor = $true) {
-                New-AzRoleAssignment -ObjectId $foreignPrincpalObjectID -Scope $subscriptionID -RoleDefinitionName "Support Request Contributor" -ObjectType "ForeignGroup"
+                New-AzRoleAssignment -ObjectId $foreignPrincipalObjectID -Scope $subscriptionID -RoleDefinitionName "Support Request Contributor" -ObjectType "ForeignGroup"
             }
             
             Write-Host "Successfully Assigned" $AssigningRole "to" $subscriptionID "."
